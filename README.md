@@ -20,10 +20,11 @@ A personal dollar-cost averaging bot that uses AI to allocate bi-monthly contrib
 
 Two-fund portfolio targeting long-term wealth building:
 
-| Symbol | Target | Description          |
-|--------|--------|----------------------|
-| VTI    | 60%    | Total US market      |
-| VXUS   | 40%    | International        |
+| Symbol | Target | Description                    |
+|--------|--------|--------------------------------|
+| VTI    | 50%    | Total US market                |
+| VXUS   | 35%    | International                  |
+| AVUV   | 15%    | US small-cap value (factor tilt) |
 
 ## Setup
 

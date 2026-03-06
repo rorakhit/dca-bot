@@ -66,8 +66,9 @@ SERVER_BASE_URL = "http://localhost:8000"
 
 # Target portfolio weights — must sum to 1.0
 TARGET_ALLOCATION = {
-    "VTI":  0.60,   # Total US market
-    "VXUS": 0.40,   # International
+    "VTI":  0.50,   # Total US market
+    "VXUS": 0.35,   # International
+    "AVUV": 0.15,   # US small-cap value (factor tilt)
 }
 
 # How much to deploy each contribution cycle
