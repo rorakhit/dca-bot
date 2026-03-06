@@ -1,6 +1,11 @@
 """
 dca_bot.py — Personal DCA Allocation Bot
 
+Portfolio (three-fund + small-cap value tilt):
+  VTI  50% — Total US market
+  VXUS 35% — International
+  AVUV 15% — US small-cap value (factor tilt)
+
 Contribution flow (live):
   1. Scheduler fires at 10am on the 1st and 15th
   2. Checks Alpaca calendar — skips if market is closed or it's a holiday
@@ -14,8 +19,12 @@ Contribution flow (dry run):
   POST /contribute?amount=100&dry_run=true
   → Runs steps 1-4, logs the proposal, skips email and orders
 
-Health check:
-  GET /health  → server status, next scheduled run, pending approvals count
+Endpoints:
+  GET  /dashboard  → mobile-friendly portfolio dashboard
+  GET  /health     → server status, next scheduled run, pending approvals count
+  GET  /portfolio  → current holdings and allocation JSON
+  GET  /audit      → full audit log as JSON
+  POST /contribute → manually trigger a contribution cycle
 
 Dependencies:
     pip install alpaca-py anthropic apscheduler fastapi uvicorn python-dotenv --break-system-packages
