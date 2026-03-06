@@ -7,7 +7,7 @@ Portfolio (three-fund + small-cap value tilt):
   AVUV 15% — US small-cap value (factor tilt)
 
 Contribution flow (live):
-  1. Scheduler fires at 10am on the 1st and 15th
+  1. Scheduler fires at 10am on the 1st and 16th (day after payday)
   2. Checks Alpaca calendar — skips if market is closed or it's a holiday
   3. Fetches portfolio state from Alpaca
   4. Asks AI how to allocate the $100 contribution
@@ -593,9 +593,9 @@ def _result_page(title: str, body: str, color: str) -> str:
 # SCHEDULED JOBS
 # ─────────────────────────────────────────────
 
-@scheduler.scheduled_job("cron", day="1,15", hour=10, minute=0)
+@scheduler.scheduled_job("cron", day="1,16", hour=10, minute=0)
 async def scheduled_contribution():
-    """Fires at 10am ET on the 1st and 15th."""
+    """Fires at 10am ET on the 1st and 16th (day after payday)."""
     today = datetime.now(ET).date()
 
     if not is_trading_day(today):
@@ -616,7 +616,7 @@ async def scheduled_contribution():
     await handle_contribution(new_cash=CONTRIBUTION_AMOUNT, dry_run=False)
 
 
-@scheduler.scheduled_job("cron", day="1,15", hour=15, minute=30)
+@scheduler.scheduled_job("cron", day="1,16", hour=15, minute=30)
 async def expire_pending_approvals():
     """Cleans up any tokens the user didn't act on before 3:30pm ET."""
     expired = [
