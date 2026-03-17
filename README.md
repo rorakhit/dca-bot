@@ -6,7 +6,7 @@ A personal dollar-cost averaging bot that uses AI to allocate bi-monthly contrib
 
 ## Features
 
-- **Scheduled contributions** — fires at 10am ET on the 1st and 15th of each month
+- **Scheduled contributions** — fires at 10am ET on the 1st and 16th of each month
 - **AI allocation** — asks Claude to decide how to split the contribution to minimise drift from target weights
 - **Email approval flow** — sends a one-click approve/deny email before any orders are placed
 - **Holiday detection** — skips contribution days that fall on market holidays via Alpaca's calendar API
@@ -18,7 +18,7 @@ A personal dollar-cost averaging bot that uses AI to allocate bi-monthly contrib
 
 ## Portfolio
 
-Two-fund portfolio targeting long-term wealth building:
+Three-fund portfolio with a small-cap value tilt, targeting long-term wealth building:
 
 | Symbol | Target | Description                    |
 |--------|--------|--------------------------------|

@@ -148,7 +148,7 @@ pending_approvals: dict[str, dict] = _load_pending()
 # CLIENTS
 # ─────────────────────────────────────────────
 
-broker    = TradingClient(ALPACA_API_KEY, ALPACA_SECRET_KEY, paper=True)  # paper=False for live
+broker    = TradingClient(ALPACA_API_KEY, ALPACA_SECRET_KEY, paper=False)  # paper=False for live
 ai_client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 scheduler = AsyncIOScheduler(timezone=ET)
 
@@ -376,7 +376,7 @@ def send_approval_email(token: str, allocations: dict, reasoning: str,
     </div>
 
     <p style="text-align:center;font-size:12px;color:#9ca3af;margin:0">
-      This approval expires at {deadline_str}. Paper trading simulation.
+      This approval expires at {deadline_str}. Live trading.
     </p>
   </div>
 </body>
@@ -1052,7 +1052,7 @@ function renderPortfolio(p, health) {
     : health.trading_day
       ? '<span class="pill yellow">● After hours</span>'
       : '<span class="pill red">● Market closed</span>';
-  const modePill = '<span class="pill" style="background:#1e1e2e;color:#a0aec0">Paper mode</span>';
+  const modePill = '<span class="pill" style="background:#1e1e2e;color:#a0aec0">Live</span>';
   const nextPill = health.next_contribution
     ? `<span class="pill" style="background:#1e1e2e;color:#a0aec0">Next: ${fmtTs(health.next_contribution)}</span>`
     : '';
