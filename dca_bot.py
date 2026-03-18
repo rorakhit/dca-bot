@@ -966,9 +966,10 @@ _LANDING_HTML = """<!DOCTYPE html>
     }
     .nav-brand .icon {
       width: 32px; height: 32px; border-radius: 8px;
-      background: linear-gradient(135deg, #818cf8, #6366f1);
+      background: linear-gradient(135deg, #22d3ee, #818cf8, #a78bfa);
       display: flex; align-items: center; justify-content: center;
-      font-size: 16px;
+      font-size: 15px;
+      box-shadow: 0 0 16px rgba(129,140,248,0.3);
     }
     .nav-right {
       display: flex;
@@ -1177,8 +1178,8 @@ _LANDING_HTML = """<!DOCTYPE html>
 
 <nav>
   <div class="nav-brand">
-    <div class="icon">📊</div>
-    <span>DCA Bot</span>
+    <div class="icon">⚡</div>
+    <span>DCA Bot <span style="font-size:11px;color:#64748b;font-weight:500;margin-left:4px">🤖📈</span></span>
   </div>
   <div class="nav-right">
     <div class="nav-pills" id="status-bar">
