@@ -61,37 +61,6 @@ Three-fund portfolio with a small-cap value tilt:
 | `GET /approve/{token}` | Approve a pending allocation (email link) |
 | `GET /deny/{token}` | Deny a pending allocation (email link) |
 
-## Deployment (Railway)
-
-The bot runs on [Railway](https://railway.app) as an always-on Dockerfile service.
-
-### Environment variables
-
-| Variable | Description |
-|----------|-------------|
-| `ALPACA_API_KEY` | Alpaca API key |
-| `ALPACA_SECRET_KEY` | Alpaca secret key |
-| `ANTHROPIC_API_KEY` | Claude API key |
-| `RESEND_API_KEY` | Resend email API key |
-| `NOTIFY_EMAIL` | Email address for notifications |
-| `SERVER_BASE_URL` | Public URL for approve/deny links (defaults to `https://dca-bot.up.railway.app`) |
-
-### Deploy
-
-1. Connect the GitHub repo to Railway
-2. Railway auto-detects the `Dockerfile` and deploys
-3. Add the env vars above in the Railway dashboard
-4. Generate a public domain in Railway networking settings
-
-## Local development
-
-```bash
-pip install -r requirements.txt
-cp .env.example .env  # fill in credentials
-python dca_bot.py
-# → http://localhost:8000
-```
-
 ## Disclaimer
 
 This software is for personal use only. It is not financial advice. Past performance does not guarantee future results.
