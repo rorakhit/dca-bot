@@ -1,80 +1,95 @@
-# DCA Bot 🤖📊
+# DCA Bot ⚡🤖📈
 
-A personal dollar-cost averaging bot that uses AI to allocate bi-monthly contributions across a target portfolio. Runs as a persistent background server, sends email approval requests before placing any trades, and exposes a mobile-friendly dashboard.
+A personal dollar-cost averaging bot that uses AI to allocate bi-monthly contributions across a three-fund portfolio. Deployed on Railway as an always-on service — no laptop required.
+
+**Live dashboard:** [dca-bot.up.railway.app](https://dca-bot.up.railway.app)
 
 > **Note:** This is a personal tool for managing a single brokerage account. It is not financial advice and does not manage anyone else's money.
 
-## Features
+## How it works
 
-- **Scheduled contributions** — fires at 10am ET on the 1st and 16th of each month
-- **AI allocation** — asks Claude to decide how to split the contribution to minimise drift from target weights
-- **Email approval flow** — sends a one-click approve/deny email before any orders are placed
-- **Holiday detection** — skips contribution days that fall on market holidays via Alpaca's calendar API
-- **Mobile dashboard** — live portfolio view with historical charts at `/dashboard`
-- **Audit log** — every event (snapshot, proposal, approval, order) is written to `audit_log.jsonl`
-- **Log rotation** — rotating file logs in `logs/dca_bot.log`
-- **Error notifications** — emails you if the bot hits an unexpected error
-- **Health endpoint** — `GET /health` for quick status checks
+1. **Scheduler fires** at 10am ET on the 1st and 16th (day after payday)
+2. **Checks Alpaca calendar** — skips if the market is closed or it's a holiday
+3. **Fetches portfolio state** from Alpaca (holdings, cash, drift from targets)
+4. **Asks Claude** how to allocate the $100 contribution to minimise drift
+5. **Emails an approve/deny link** to your inbox via Resend
+6. **You click approve** → market orders execute immediately on Alpaca
+7. Pending approvals **expire at 3:30pm ET** if not acted on
 
 ## Portfolio
 
-Three-fund portfolio with a small-cap value tilt, targeting long-term wealth building:
+Three-fund portfolio with a small-cap value tilt:
 
-| Symbol | Target | Description                    |
-|--------|--------|--------------------------------|
-| VTI    | 50%    | Total US market                |
-| VXUS   | 35%    | International                  |
-| AVUV   | 15%    | US small-cap value (factor tilt) |
+| Symbol | Target | Description |
+|--------|--------|-------------|
+| VTI | 50% | Total US market |
+| VXUS | 35% | International |
+| AVUV | 15% | US small-cap value (factor tilt) |
 
-## Setup
+## Features
 
-### 1. Install dependencies
+- **Desktop dashboard** at `/` — portfolio value, allocation bars, drift charts, contribution history, event log
+- **Mobile dashboard** at `/dashboard` — dark theme, optimised for phone viewing
+- **AI allocation** — Claude decides how to split contributions to minimise drift from target weights
+- **Email approval flow** — one-click approve/deny before any orders are placed
+- **Contribution reports** — auto-generated at noon on 1st/16th with charts and AI reasoning
+- **Funding reminders** — emails on the 15th and last day of the month to transfer cash
+- **Holiday detection** — skips days when NYSE is closed via Alpaca's calendar API
+- **Audit log** — every event written to `audit_log.jsonl`
+- **Error notifications** — emails you if the bot hits an unexpected error
 
-```bash
-pip install alpaca-py anthropic apscheduler fastapi uvicorn python-dotenv --break-system-packages
-```
+## Scheduled jobs
 
-### 2. Configure credentials
-
-```bash
-cp .env.example .env
-# Edit .env with your Alpaca, Anthropic, and Gmail credentials
-```
-
-### 3. Run with pm2
-
-```bash
-pm2 start dca_bot.py --name dca-bot --interpreter python3
-pm2 save
-```
-
-### 4. Access the dashboard
-
-```
-http://localhost:8000/dashboard
-```
-
-Use [Tailscale](https://tailscale.com) to access it from your phone anywhere.
+| Job | Schedule | Description |
+|-----|----------|-------------|
+| `scheduled_contribution` | 10:00 AM ET, 1st & 16th | Run the contribution flow |
+| `expire_pending_approvals` | 3:30 PM ET, 1st & 16th | Clean up unapproved tokens |
+| `dca_contribution_report` | 12:00 PM ET, 1st & 16th | Email portfolio report with charts |
+| `contribution_reminder` | 9:00 AM ET, 15th & last day | Email reminder to fund Alpaca |
 
 ## Endpoints
 
 | Endpoint | Description |
 |----------|-------------|
-| `GET /dashboard` | Mobile-friendly portfolio dashboard |
+| `GET /` | Desktop portfolio dashboard |
+| `GET /dashboard` | Mobile portfolio dashboard |
 | `GET /portfolio` | Current holdings and allocation JSON |
 | `GET /health` | Server status, next run time, account value |
 | `GET /audit` | Full audit log as JSON |
 | `GET /pending` | Pending approval tokens |
-| `POST /contribute?amount=100&dry_run=true` | Manually trigger a contribution cycle |
+| `POST /contribute?amount=100&dry_run=false` | Manually trigger a contribution |
 | `GET /approve/{token}` | Approve a pending allocation (email link) |
 | `GET /deny/{token}` | Deny a pending allocation (email link) |
 
-## Dry run mode
+## Deployment (Railway)
 
-The bot runs in paper trading mode by default (`paper=True`). To switch to live trading, change the `TradingClient` init in `dca_bot.py`:
+The bot runs on [Railway](https://railway.app) as an always-on Dockerfile service.
 
-```python
-broker = TradingClient(ALPACA_API_KEY, ALPACA_SECRET_KEY, paper=False)
+### Environment variables
+
+| Variable | Description |
+|----------|-------------|
+| `ALPACA_API_KEY` | Alpaca API key |
+| `ALPACA_SECRET_KEY` | Alpaca secret key |
+| `ANTHROPIC_API_KEY` | Claude API key |
+| `RESEND_API_KEY` | Resend email API key |
+| `NOTIFY_EMAIL` | Email address for notifications |
+| `SERVER_BASE_URL` | Public URL for approve/deny links (defaults to `https://dca-bot.up.railway.app`) |
+
+### Deploy
+
+1. Connect the GitHub repo to Railway
+2. Railway auto-detects the `Dockerfile` and deploys
+3. Add the env vars above in the Railway dashboard
+4. Generate a public domain in Railway networking settings
+
+## Local development
+
+```bash
+pip install -r requirements.txt
+cp .env.example .env  # fill in credentials
+python dca_bot.py
+# → http://localhost:8000
 ```
 
 ## Disclaimer
