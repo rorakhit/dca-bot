@@ -71,7 +71,7 @@ NOTIFY_EMAIL       = os.environ["NOTIFY_EMAIL"]
 # ─────────────────────────────────────────────
 
 # The URL approve/deny links point to. Must be reachable from your phone/laptop.
-SERVER_BASE_URL = "http://localhost:8000"
+SERVER_BASE_URL = os.environ.get("SERVER_BASE_URL", "https://dca-bot.up.railway.app")
 
 # Target portfolio weights — must sum to 1.0
 TARGET_ALLOCATION = {
