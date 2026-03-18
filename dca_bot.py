@@ -630,6 +630,28 @@ async def expire_pending_approvals():
         _save_pending(pending_approvals)
 
 
+@scheduler.scheduled_job("cron", day="15,last", hour=9, minute=0)
+def contribution_reminder():
+    """Remind to fund Alpaca on the 15th and last day of the month."""
+    today = datetime.now(ET).strftime("%B %d")
+    html = f"""<!DOCTYPE html>
+<html><body style="font-family:-apple-system,sans-serif;padding:24px;color:#111827">
+  <div style="max-width:520px;background:#eff6ff;border:1px solid #bfdbfe;
+              border-radius:12px;padding:24px">
+    <h2 style="color:#2563eb;margin:0 0 12px">💰 DCA Reminder — {today}</h2>
+    <p style="margin:0 0 8px">
+      Time to transfer <strong>$100</strong> into your Alpaca account so the
+      bot can invest it on the next contribution day (1st or 16th).
+    </p>
+    <p style="font-size:13px;color:#6b7280;margin:12px 0 0">
+      The bot will automatically invest once the cash is available.
+    </p>
+  </div>
+</body></html>"""
+    _send_email("💰 DCA Bot — Fund your account ($100)", html)
+    log.info("Contribution reminder email sent")
+
+
 # ─────────────────────────────────────────────
 # HEALTH ENDPOINT
 # ─────────────────────────────────────────────
