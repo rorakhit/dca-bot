@@ -308,7 +308,8 @@ def _send_email(subject: str, html_body: str):
     msg["To"]      = NOTIFY_EMAIL
     msg.attach(MIMEText(html_body, "html"))
 
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+    with smtplib.SMTP("smtp.gmail.com", 587) as server:
+        server.starttls()
         server.login(GMAIL_SENDER, GMAIL_APP_PASSWORD.replace(" ", ""))
         server.send_message(msg)
 
