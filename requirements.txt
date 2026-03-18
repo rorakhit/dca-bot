@@ -1,5 +1,6 @@
 alpaca-py
 anthropic
+pytz
 apscheduler
 fastapi
 matplotlib
