@@ -35,12 +35,10 @@ import logging
 import logging.handlers
 import os
 import secrets
-import smtplib
+import resend
 import time
 from contextlib import asynccontextmanager
 from datetime import date, datetime, timezone
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -62,9 +60,9 @@ load_dotenv(Path(__file__).parent / ".env")
 ALPACA_API_KEY     = os.environ["ALPACA_API_KEY"]
 ALPACA_SECRET_KEY  = os.environ["ALPACA_SECRET_KEY"]
 ANTHROPIC_API_KEY  = os.environ["ANTHROPIC_API_KEY"]
-GMAIL_SENDER       = os.environ["GMAIL_SENDER"]
-GMAIL_APP_PASSWORD = os.environ["GMAIL_APP_PASSWORD"]
 NOTIFY_EMAIL       = os.environ["NOTIFY_EMAIL"]
+resend.api_key     = os.environ["RESEND_API_KEY"]
+EMAIL_FROM         = os.environ.get("EMAIL_FROM", "DCA Bot <onboarding@resend.dev>")
 
 # ─────────────────────────────────────────────
 # CONFIG (non-secret)
@@ -301,17 +299,13 @@ Respond ONLY with valid JSON — no markdown, no code fences:
 # ─────────────────────────────────────────────
 
 def _send_email(subject: str, html_body: str):
-    """Low-level SMTP helper. Raises on failure."""
-    msg = MIMEMultipart("alternative")
-    msg["Subject"] = subject
-    msg["From"]    = GMAIL_SENDER
-    msg["To"]      = NOTIFY_EMAIL
-    msg.attach(MIMEText(html_body, "html"))
-
-    with smtplib.SMTP("smtp.gmail.com", 587) as server:
-        server.starttls()
-        server.login(GMAIL_SENDER, GMAIL_APP_PASSWORD.replace(" ", ""))
-        server.send_message(msg)
+    """Send email via Resend HTTP API. Raises on failure."""
+    resend.Emails.send({
+        "from":    EMAIL_FROM,
+        "to":      [NOTIFY_EMAIL],
+        "subject": subject,
+        "html":    html_body,
+    })
 
 
 def send_approval_email(token: str, allocations: dict, reasoning: str,

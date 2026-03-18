@@ -2,5 +2,6 @@ alpaca-py
 anthropic
 apscheduler
 fastapi
+resend
 uvicorn
 python-dotenv
