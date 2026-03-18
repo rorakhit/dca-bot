@@ -1,6 +1,6 @@
 # DCA Bot ⚡🤖📈
 
-A personal dollar-cost averaging bot that uses AI to allocate bi-monthly contributions across a three-fund portfolio. Deployed on Railway as an always-on service — no laptop required.
+A personal dollar-cost averaging bot that uses AI to allocate bi-monthly contributions across a four-fund portfolio. Deployed on Railway as an always-on service — no laptop required.
 
 **Live dashboard:** [dca-bot.up.railway.app](https://dca-bot.up.railway.app)
 
@@ -18,13 +18,14 @@ A personal dollar-cost averaging bot that uses AI to allocate bi-monthly contrib
 
 ## Portfolio
 
-Three-fund portfolio with a small-cap value tilt:
+Four-fund portfolio with a small-cap value tilt and bond allocation:
 
 | Symbol | Target | Description |
 |--------|--------|-------------|
 | VTI | 50% | Total US market |
 | VXUS | 35% | International |
-| AVUV | 15% | US small-cap value (factor tilt) |
+| AVUV | 10% | US small-cap value (factor tilt) |
+| BND | 5% | US aggregate bonds |
 
 ## Features
 
