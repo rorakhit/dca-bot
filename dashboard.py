@@ -447,8 +447,10 @@ function renderHistory(entries) {
     allSymbols.forEach(sym => { driftData[sym] = days.map(d => d.drift_from_target?.[sym] ?? null); });
     mkDriftChart(days.map(d => fmtDateShort(d.timestamp)), driftData);
   } else {
-    document.querySelector('.chart-wrap').innerHTML = '<div class="loading">Not enough data yet — charts appear after a few contribution cycles.</div>';
-    document.querySelector('.chart-wrap-sm canvas')?.parentElement && (document.querySelector('.chart-wrap canvas')?.closest('.card').querySelector('.chart-wrap').innerHTML = '<div class="loading">Not enough data yet.</div>');
+    const cw = document.querySelector('.chart-wrap');
+    if (cw) cw.innerHTML = '<div class="loading">Not enough data yet — charts appear after a few contribution cycles.</div>';
+    const cw2 = document.querySelectorAll('.chart-wrap')[1];
+    if (cw2) cw2.innerHTML = '<div class="loading">Not enough data yet.</div>';
   }
 
   const proposals = entries.filter(e => e.event === 'ai_allocation_proposed').slice(0, 10);
