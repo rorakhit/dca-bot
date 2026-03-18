@@ -938,7 +938,7 @@ _LANDING_HTML = """<!DOCTYPE html>
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #06060a;
+      background: #0c0a1a;
       color: #e2e8f0;
       min-height: 100vh;
     }
@@ -954,7 +954,7 @@ _LANDING_HTML = """<!DOCTYPE html>
       position: sticky;
       top: 0;
       z-index: 10;
-      background: rgba(6,6,10,0.85);
+      background: rgba(12,10,26,0.85);
     }
     .nav-brand {
       display: flex;
