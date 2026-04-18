@@ -1,20 +1,18 @@
 """
 app.py — FastAPI app, lifespan, scheduler, and entrypoint.
 
+⚠️ RETIRED — LIVE TRADING MOVED TO dca-bot-dynamic
+   All scheduler jobs below are commented out. The DISABLED=True flag in
+   config.py short-circuits handle_contribution() as a backup. Dashboards,
+   /portfolio, and /audit remain functional as a read-only historical view.
+   To re-activate: flip config.DISABLED to False AND uncomment the
+   scheduler.add_job(...) blocks below.
+
 Portfolio (four-fund + small-cap value tilt):
   VTI  50% — Total US market
   VXUS 35% — International
   AVUV 10% — US small-cap value (factor tilt)
   BND   5% — US aggregate bonds
-
-Contribution flow (live):
-  1. Scheduler fires at 10am on the 1st and 16th (day after payday)
-  2. Checks Alpaca calendar — skips if market is closed or it's a holiday
-  3. Fetches portfolio state from Alpaca
-  4. Asks AI how to allocate the $100 contribution
-  5. Emails an approve/deny link to your inbox
-  6. You click approve -> orders execute immediately
-  7. Pending approvals expire at 3:30pm ET if not acted on
 """
 
 import os
@@ -38,26 +36,29 @@ from scheduler_jobs import (
 
 scheduler = AsyncIOScheduler(timezone=ET)
 
-scheduler.add_job(
-    scheduled_contribution,
-    "cron", day="1,16", hour=10, minute=0,
-    id="scheduled_contribution",
-)
-scheduler.add_job(
-    expire_pending,
-    "cron", day="1,16", hour=15, minute=30,
-    id="expire_pending_approvals",
-)
-scheduler.add_job(
-    contribution_reminder,
-    "cron", day="15,last", hour=9, minute=0,
-    id="contribution_reminder",
-)
-scheduler.add_job(
-    dca_contribution_report,
-    "cron", day="1,16", hour=12, minute=0,
-    id="dca_contribution_report",
-)
+# ⚠️ DISABLED — bot retired. All automatic jobs commented out.
+# Live trading moved to dca-bot-dynamic.
+#
+# scheduler.add_job(
+#     scheduled_contribution,
+#     "cron", day="1,16", hour=10, minute=0,
+#     id="scheduled_contribution",
+# )
+# scheduler.add_job(
+#     expire_pending,
+#     "cron", day="1,16", hour=15, minute=30,
+#     id="expire_pending_approvals",
+# )
+# scheduler.add_job(
+#     contribution_reminder,
+#     "cron", day="15,last", hour=9, minute=0,
+#     id="contribution_reminder",
+# )
+# scheduler.add_job(
+#     dca_contribution_report,
+#     "cron", day="1,16", hour=12, minute=0,
+#     id="dca_contribution_report",
+# )
 
 
 # ─────────────────────────────────────────────
@@ -67,7 +68,10 @@ scheduler.add_job(
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     scheduler.start()
-    log.info("Scheduler started — jobs: contribution@10:00 on 1st/16th, expire@15:30")
+    log.warning(
+        "⚠️ dca-bot is DISABLED (retired). Live trading runs in dca-bot-dynamic. "
+        "Scheduler started with no jobs. Dashboards remain read-only."
+    )
     yield
     scheduler.shutdown()
 

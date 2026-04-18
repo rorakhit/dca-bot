@@ -28,6 +28,12 @@ EMAIL_FROM         = os.environ.get("EMAIL_FROM", "DCA Bot <onboarding@resend.de
 # CONFIG (non-secret)
 # ─────────────────────────────────────────────
 
+# ⚠️ KILL SWITCH — this bot is retired. Live trading moved to dca-bot-dynamic.
+# Scheduler jobs are commented out in app.py, AND this flag short-circuits the
+# contribution handler as a belt-and-suspenders defense. To re-enable, set to
+# False AND re-enable the scheduler jobs in app.py.
+DISABLED = True
+
 # The URL approve/deny links point to. Must be reachable from your phone/laptop.
 SERVER_BASE_URL = os.environ.get("SERVER_BASE_URL", "https://dca-bot.up.railway.app")
 

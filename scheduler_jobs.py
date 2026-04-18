@@ -23,6 +23,7 @@ from broker import broker, get_portfolio_state, is_trading_day
 from config import (
     AUDIT_LOG_PATH,
     CONTRIBUTION_AMOUNT,
+    DISABLED,
     ET,
     TARGET_ALLOCATION,
     log,
@@ -41,6 +42,13 @@ async def handle_contribution(new_cash: float, dry_run: bool = False):
     dry_run=True  -> propose allocation, log it, return. No email, no orders.
     dry_run=False -> propose allocation, send approval email, wait for click.
     """
+    if DISABLED:
+        log.warning(
+            "⚠️ dca-bot is DISABLED — live trading moved to dca-bot-dynamic. "
+            "handle_contribution() is a no-op. See config.py DISABLED flag."
+        )
+        return
+
     log.info(f"Contribution event: ${new_cash:.2f} | dry_run={dry_run}")
 
     try:
@@ -77,6 +85,10 @@ async def handle_contribution(new_cash: float, dry_run: bool = False):
 
 async def scheduled_contribution():
     """Fires at 10am ET on the 1st and 16th (day after payday)."""
+    if DISABLED:
+        log.warning("⚠️ dca-bot DISABLED — scheduled_contribution no-op")
+        return
+
     today = datetime.now(ET).date()
 
     if not is_trading_day(today):
